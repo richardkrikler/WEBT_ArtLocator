@@ -1,0 +1,22 @@
+{
+    "name": "richardkrikler/artlocator",
+    "type": "project",
+    "autoload": {
+        "psr-4": {
+            "Richardkrikler\\Artlocator\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Richard Krikler",
+            "email": "57064056+RichardKrikler@users.noreply.github.com"
+        }
+    ],
+    "require": {
+        "doctrine/dbal": "^3.3",
+        "doctrine/orm": "^2.12",
+        "doctrine/annotations": "^1.13",
+        "symfony/yaml": "^5.4",
+        "symfony/cache": "^5.4"
+    }
+}

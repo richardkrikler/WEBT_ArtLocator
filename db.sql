@@ -16,3 +16,12 @@ CREATE TABLE portraits
     fk_pk_museum_id INT,
     FOREIGN KEY (fk_pk_museum_id) REFERENCES museums (pk_museum_id) ON DELETE SET NULL
 );
+
+/**
+  country
+  country_name
+  zip
+  city
+  street
+  house_number
+ */
