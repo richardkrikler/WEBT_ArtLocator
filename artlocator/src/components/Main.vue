@@ -43,7 +43,7 @@
         </div>
       </div>
 
-      <div class="form-control mx-auto">
+      <div class="form-control mx-auto xl:mx-0">
         <div class="input-group">
           <select class="select select-bordered w-52" v-model="sortBy">
             <option disabled selected value="null">Sort By</option>
@@ -76,7 +76,7 @@
         </div>
       </div>
 
-      <div class="flex justify-center w-full xl:w-max">
+      <div class="flex justify-center w-full xl:w-max mx-auto xl:mx-0">
         <div class="btn-group">
           <button class="btn">«</button>
           <button class="btn btn-active">1</button>
