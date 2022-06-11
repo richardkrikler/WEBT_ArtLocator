@@ -23,7 +23,7 @@
                v-model="museum.city"/>
         <input type="url" placeholder="URL" class="input input-bordered w-full max-w-xs mx-auto" v-model="museum.url"/>
         <input type="file" placeholder="Image" class="input input-bordered w-full max-w-xs mx-auto" ref="museumImage"/>
-        <input class="btn btn-primary max-w-xs mx-auto" value="Add" @click="addMuseum">
+        <input class="btn btn-primary max-w-xs mx-auto" type="button" value="Add" @click="addMuseum">
 
       </div>
     </div>
@@ -51,15 +51,47 @@
           <option v-for="museum in museumSelector" :value="museum.id">{{ museum.name }}</option>
         </select>
 
-        <input class="btn btn-primary max-w-xs mx-auto" value="Add" @click="addPortrait">
+        <input class="btn btn-primary max-w-xs mx-auto" type="button" value="Add" @click="addPortrait">
+      </div>
+    </div>
+
+    <div class="my-10 bg-base-100 shadow-2xl rounded-box p-5 flex justify-center gap-6 md:justify-between flex-wrap">
+      <div class="text-center w-full flex flex-col gap-3">
+        <h1 class="text-2xl mt-2 text-center">Museum</h1>
+
+        <success-message class="max-w-xs mx-auto" v-if="removeMuseum.sucMsg" :msg="removeMuseum.sucMsg"/>
+        <error-message class="max-w-xs mx-auto" v-if="removeMuseum.errMsg" :msg="removeMuseum.errMsg"/>
+
+        <select class="select select-bordered max-w-xs mx-auto" v-model="removeMuseum.id">
+          <option disabled selected value="null">Museum</option>
+          <option v-for="museum in museumSelector" :value="museum.id">{{ museum.name }}</option>
+        </select>
+
+        <input class="btn btn-primary max-w-xs mx-auto" type="button" value="Remove" @click="deleteMuseum">
+      </div>
+    </div>
+
+    <div class="my-10 bg-base-100 shadow-2xl rounded-box p-5 flex justify-center gap-6 md:justify-between flex-wrap">
+      <div class="text-center w-full flex flex-col gap-3">
+        <h1 class="text-2xl mt-2 text-center">Portrait</h1>
+
+        <success-message class="max-w-xs mx-auto" v-if="removePortrait.sucMsg" :msg="removePortrait.sucMsg"/>
+        <error-message class="max-w-xs mx-auto" v-if="removePortrait.errMsg" :msg="removePortrait.errMsg"/>
+
+        <select class="select select-bordered max-w-xs mx-auto" v-model="removePortrait.id">
+          <option disabled selected value="null">Portrait</option>
+          <option v-for="portrait in portraitSelector" :value="portrait.id">{{ portrait.name }}</option>
+        </select>
+
+        <input class="btn btn-primary max-w-xs mx-auto" type="button" value="Remove" @click="deletePortrait">
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import axios from "axios";
-import {BASE_URL} from "../store";
+import axios from 'axios'
+import {BASE_URL} from '../store'
 import ErrorMessage from './ErrorMessage.vue'
 import SuccessMessage from './SuccessMessage.vue'
 
@@ -69,6 +101,7 @@ export default {
   data() {
     return {
       museumSelector: [],
+      portraitSelector: [],
       museum: {
         errMsg: null,
         sucMsg: null,
@@ -87,11 +120,37 @@ export default {
         artist: null,
         image: null,
         museum: null
+      },
+      removeMuseum: {
+        errMsg: null,
+        sucMsg: null,
+        id: null
+      },
+      removePortrait: {
+        errMsg: null,
+        sucMsg: null,
+        id: null
       }
     }
   },
 
   methods: {
+    loadMuseumSelector() {
+      axios.get(BASE_URL, {
+        params: {
+          get: 'museums'
+        }
+      }).then(res => this.museumSelector = res.data)
+    },
+
+    loadPortraitSelector() {
+      axios.get(BASE_URL, {
+        params: {
+          get: 'portraits'
+        }
+      }).then(res => this.portraitSelector = res.data)
+    },
+
     addMuseum() {
       const selectedFile = this.$refs.museumImage.files[0]
 
@@ -130,6 +189,8 @@ export default {
           this.museum.country = null
           this.museum.city = null
           this.museum.url = null
+
+          this.loadMuseumSelector()
         }
       }).catch((error) => {
         this.museum.msg = error
@@ -174,19 +235,56 @@ export default {
           this.portrait.year = null
           this.portrait.artist = null
           this.portrait.museum = null
+
+          this.loadPortraitSelector()
         }
       }).catch((error) => {
         this.portrait.msg = error
+      })
+    },
+
+    deleteMuseum() {
+      axios.post(BASE_URL, {
+        delete: 'museum',
+        id: this.removeMuseum.id
+      }).then((res) => {
+        this.removeMuseum.sucMsg = null
+        this.removeMuseum.errMsg = null
+        if (res.data.error !== undefined) {
+          this.removeMuseum.errMsg = res.data.error
+        } else if (res.data.msg !== undefined) {
+          this.removeMuseum.sucMsg = res.data.msg
+          this.removeMuseum.id = null
+          this.loadMuseumSelector()
+        }
+      }).catch((error) => {
+        this.removeMuseum.msg = error
+      })
+    },
+
+    deletePortrait() {
+      axios.post(BASE_URL, {
+        delete: 'portrait',
+        id: this.removePortrait.id
+      }).then((res) => {
+        this.removePortrait.sucMsg = null
+        this.removePortrait.errMsg = null
+        if (res.data.error !== undefined) {
+          this.removePortrait.errMsg = res.data.error
+        } else if (res.data.msg !== undefined) {
+          this.removePortrait.sucMsg = res.data.msg
+          this.removePortrait.id = null
+          this.loadPortraitSelector()
+        }
+      }).catch((error) => {
+        this.removePortrait.msg = error
       })
     }
   },
 
   created() {
-    axios.get(BASE_URL, {
-      params: {
-        get: 'museums'
-      }
-    }).then(res => this.museumSelector = res.data)
+    this.loadMuseumSelector()
+    this.loadPortraitSelector()
   }
 }
 </script>

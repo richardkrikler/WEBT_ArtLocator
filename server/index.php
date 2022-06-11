@@ -18,7 +18,7 @@ $connectionParams = [
 $conn = DriverManager::getConnection($connectionParams);
 $queryBuilder = $conn->createQueryBuilder();
 
-$post = json_decode(file_get_contents("php://input"), true);
+$post = json_decode(file_get_contents('php://input'), true);
 $output = [];
 
 
@@ -33,7 +33,7 @@ if (isset($_GET['get'])) {
             $output = $queryBuilder->select('portraitId as id', 'p.name as name', 'p.description as description', 'year', 'artist', 'm.museumId as museumId', 'm.name as museumName')
                 ->from('portraits', 'p')
                 ->innerJoin('p', 'museums', 'm', 'p.museumId = m.museumId')
-                ->where('p.name LIKE ? OR p.description LIKE ? OR year LIKE ?')
+                ->where('p.name LIKE ? OR artist LIKE ? OR year LIKE ?')
                 ->setParameter(0, '%' . $_GET['searchText'] . '%')
                 ->setParameter(1, '%' . $_GET['searchText'] . '%')
                 ->setParameter(2, '%' . $_GET['searchText'] . '%')
@@ -73,7 +73,7 @@ if (isset($_GET['get'])) {
         return;
     }
 } else if (isset($post)) {
-    if ($post['post'] === 'museum') {
+    if (isset($post['post']) && $post['post'] === 'museum') {
         if (isset($post['name']) && $post['name'] !== '' && isset($post['description']) && isset($post['country']) && $post['country'] !== '' && isset($post['city']) && $post['city'] !== '' && isset($post['url']) && $post['url'] !== '') {
             $queryBuilder->insert('museums')
                 ->values([
@@ -95,7 +95,7 @@ if (isset($_GET['get'])) {
         } else {
             $output = ['error' => 'Please fill in all input fields.'];
         }
-    } else if ($post['post'] === 'portrait') {
+    } else if (isset($post['post']) && $post['post'] === 'portrait') {
         if (isset($post['name']) && $post['name'] !== '' && isset($post['description']) && isset($post['year']) && $post['year'] !== '' && isset($post['artist']) && $post['artist'] !== '' && isset($post['museum']) && $post['museum'] !== '') {
             $queryBuilder->insert('portraits')
                 ->values([
@@ -116,6 +116,26 @@ if (isset($_GET['get'])) {
             $output = ['msg' => 'Successfully added a new Portrait!'];
         } else {
             $output = ['error' => 'Please fill in all input fields.'];
+        }
+    } else if (isset($post['delete']) && $post['delete'] === 'museum') {
+        if (isset($post['id']) && $post['id'] !== '') {
+            $queryBuilder->delete('museums')
+                ->where('museumId = ?')
+                ->setParameter(0, $post['id'])
+                ->executeQuery();
+            $output = ['msg' => 'Successfully deleted a Museum!'];
+        } else {
+            $output = ['error' => 'Please select a Museum.'];
+        }
+    } else if (isset($post['delete']) && $post['delete'] === 'portrait') {
+        if (isset($post['id']) && $post['id'] !== '') {
+            $queryBuilder->delete('portraits')
+                ->where('portraitId = ?')
+                ->setParameter(0, $post['id'])
+                ->executeQuery();
+            $output = ['msg' => 'Successfully deleted a Portrait!'];
+        } else {
+            $output = ['error' => 'Please select a Portrait.'];
         }
     }
 }

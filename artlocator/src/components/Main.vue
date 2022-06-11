@@ -74,7 +74,6 @@
       <!--      </div>-->
     </div>
 
-
     <div>
       <portrait v-for="p in portraits" :id="p.id" :name="p.name" :description="p.description" :year="p.year"
                 :artist="p.artist" :museum="p.museumName"/>
