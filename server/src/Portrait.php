@@ -33,6 +33,11 @@ class Portrait
     private string $year;
 
     /**
+     * @ORM\Column(type="string")
+     */
+    private string $artist;
+
+    /**
      * @ORM\Column(type="integer")
      */
     private int $museumId;
@@ -47,10 +52,11 @@ class Portrait
      * @param string $name
      * @param string $description
      * @param string $year
+     * @param string $artist
      * @param int $museumId
      * @param $image
      */
-    public function __construct(int $portraitId, string $name, string $description, string $year, int $museumId, $image)
+    public function __construct(int $portraitId, string $name, string $description, string $year, string $artist, int $museumId, $image)
     {
         $this->portraitId = $portraitId;
         $this->name = $name;
@@ -154,5 +160,21 @@ class Portrait
     public function getImage()
     {
         return $this->image;
+    }
+
+    /**
+     * @return string
+     */
+    public function getArtist(): string
+    {
+        return $this->artist;
+    }
+
+    /**
+     * @param string $artist
+     */
+    public function setArtist(string $artist): void
+    {
+        $this->artist = $artist;
     }
 }

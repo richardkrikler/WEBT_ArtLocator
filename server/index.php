@@ -29,11 +29,23 @@ if (isset($_GET['get'])) {
             ->executeQuery()
             ->fetchAllAssociative();
     } else if ($_GET['get'] === 'portraits') {
-        $output = $queryBuilder->select('portraitId as id', 'p.name', 'p.description', 'year', 'm.museumId')
-            ->from('portraits', 'p')
-            ->innerJoin('p', 'museums', 'm', 'p.museumId = m.museumId')
-            ->executeQuery()
-            ->fetchAllAssociative();
+        if (isset($_GET['searchText'])) {
+            $output = $queryBuilder->select('portraitId as id', 'p.name as name', 'p.description as description', 'year', 'artist', 'm.museumId as museumId', 'm.name as museumName')
+                ->from('portraits', 'p')
+                ->innerJoin('p', 'museums', 'm', 'p.museumId = m.museumId')
+                ->where('p.name LIKE ? OR p.description LIKE ? OR year LIKE ?')
+                ->setParameter(0, '%' . $_GET['searchText'] . '%')
+                ->setParameter(1, '%' . $_GET['searchText'] . '%')
+                ->setParameter(2, '%' . $_GET['searchText'] . '%')
+                ->executeQuery()
+                ->fetchAllAssociative();
+        } else {
+            $output = $queryBuilder->select('portraitId as id', 'p.name as name', 'p.description as description', 'year', 'artist', 'm.museumId as museumId', 'm.name as museumName')
+                ->from('portraits', 'p')
+                ->innerJoin('p', 'museums', 'm', 'p.museumId = m.museumId')
+                ->executeQuery()
+                ->fetchAllAssociative();
+        }
     } else if ($_GET['get'] === 'image' && isset($_GET['id']) && isset($_GET['from'])) {
         $table = null;
         if ($_GET['from'] === 'museum') {
@@ -84,7 +96,27 @@ if (isset($_GET['get'])) {
             $output = ['error' => 'Please fill in all input fields.'];
         }
     } else if ($post['post'] === 'portrait') {
-
+        if (isset($post['name']) && $post['name'] !== '' && isset($post['description']) && isset($post['year']) && $post['year'] !== '' && isset($post['artist']) && $post['artist'] !== '' && isset($post['museum']) && $post['museum'] !== '') {
+            $queryBuilder->insert('portraits')
+                ->values([
+                    'name' => '?',
+                    'description' => '?',
+                    'year' => '?',
+                    'artist' => '?',
+                    'museumId' => '?',
+                    'image' => '?'
+                ])
+                ->setParameter(0, $post['name'])
+                ->setParameter(1, $post['description'])
+                ->setParameter(2, $post['year'])
+                ->setParameter(3, $post['artist'])
+                ->setParameter(4, $post['museum'])
+                ->setParameter(5, !isset($post['image']) ? null : $post['image'])
+                ->executeQuery();
+            $output = ['msg' => 'Successfully added a new Portrait!'];
+        } else {
+            $output = ['error' => 'Please fill in all input fields.'];
+        }
     }
 }
 
@@ -108,16 +140,17 @@ if ($outputType === 'json') {
     function array2xml($array, $xml = false)
     {
         if ($xml === false) {
+            $arName = $_GET['get'];
             $xml = new SimpleXMLElement(<<<XML
 <?xml version="1.0" encoding="UTF-8" ?>
-<result/>
+<$arName/>
 XML
             );
         }
 
         foreach ($array as $key => $value) {
             if (is_array($value)) {
-                array2xml($value, $xml->addChild($key));
+                array2xml($value, $xml->addChild(substr($_GET['get'], 0, -1)));
             } else {
                 $xml->addChild($key, $value);
             }
@@ -126,8 +159,7 @@ XML
         return $xml->asXML();
     }
 
-    $jSON = json_decode(json_encode($output), true);
-    $xml = array2xml($jSON, false);
+    $xml = array2xml($output, false);
 
     print_r($xml);
 }
