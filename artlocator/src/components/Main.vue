@@ -32,8 +32,8 @@
 
       <div class="form-control">
         <div class="input-group">
-          <select class="select select-bordered w-64" v-model="venue">
-            <option disabled selected value="null">Venue</option>
+          <select class="select select-bordered w-64" v-model="museum">
+            <option disabled selected value="null">Museum</option>
             <option>Louvre</option>
             <option>The Metropolitan Museum</option>
           </select>
@@ -50,7 +50,7 @@
             <option>Artist</option>
             <option>Name</option>
             <option>Year</option>
-            <option>Venue</option>
+            <option>Museum</option>
           </select>
 
           <label class="swap swap-rotate px-2" style="border: 1px solid #D6D6D6; border-left: 0">
@@ -90,7 +90,7 @@
 
 
     <div>
-      <portrait v-for="p in 4" name="Portrait" description="lorem ipsum" artist="Max Musterfrau" venue="VenueX"/>
+      <portrait v-for="p in 4" name="Portrait" description="lorem ipsum" artist="Max Musterfrau" museum="MuseumX"/>
     </div>
   </div>
 </template>
@@ -111,7 +111,7 @@ export default {
     return {
       searchText: null,
       year: null,
-      venue: null,
+      museum: null,
       sortBy: null,
       ascending: true,
       page: 1
@@ -120,7 +120,7 @@ export default {
 
   methods: {
     search() {
-      console.log(this.searchText + ' - ' + this.year + ' - ' + this.venue + ' - ' + this.sortBy + ' - ' + this.ascending + ' - ' + this.page)
+      console.log(this.searchText + ' - ' + this.year + ' - ' + this.museum + ' - ' + this.sortBy + ' - ' + this.ascending + ' - ' + this.page)
 
     }
   }

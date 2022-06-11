@@ -9,7 +9,7 @@
       <div class="text-left flex flex-col gap-2">
         <p>{{ description }}</p>
         <p>Artist: {{ artist }}</p>
-        <p>Venue: <a class="link link-hover">{{ venue }}</a></p>
+        <p>Museum: <a class="link link-hover">{{ museum }}</a></p>
       </div>
     </div>
   </div>
@@ -32,7 +32,7 @@ export default {
       type: String,
       default: ''
     },
-    venue: {
+    museum: {
       type: String,
       default: ''
     }

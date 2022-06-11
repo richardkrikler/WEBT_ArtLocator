@@ -11,7 +11,7 @@
         <div class="flex-none hidden md:block">
           <ul class="menu menu-horizontal p-0">
             <!-- Navbar menu content here -->
-            <li><a @click="$router.push({name: 'Venues'})">Venues</a></li>
+            <li><a @click="$router.push({name: 'Museums'})">Museums</a></li>
             <li><a @click="$router.push({name: 'About'})">About</a></li>
             <li><a @click="$router.push({name: 'Admin'})">Admin</a></li>
           </ul>
@@ -39,7 +39,7 @@
       <ul class="menu p-4 overflow-y-auto w-80 bg-base-100">
         <!-- Sidebar content here -->
         <li><a class="normal-case text-xl font-bold" @click="$router.push({name: 'default'})">ArtLocator</a></li>
-        <li><a @click="$router.push({name: 'Venues'})">Venues</a></li>
+        <li><a @click="$router.push({name: 'Museums'})">Museums</a></li>
         <li><a @click="$router.push({name: 'About'})">About</a></li>
         <li><a @click="$router.push({name: 'Admin'})">Admin</a></li>
       </ul>

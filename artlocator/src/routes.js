@@ -1,13 +1,13 @@
 import Main from './components/Main.vue'
 import About from './components/About.vue'
 import Admin from './components/Admin.vue'
-import Venues from './components/Venues.vue'
+import Museums from './components/Museums.vue'
 
 export default [
     {
-        name: 'Venues',
-        path: '/venues',
-        component: Venues,
+        name: 'Museums',
+        path: '/museums',
+        component: Museums,
         props: true
     },
     {
