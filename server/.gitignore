@@ -1,3 +1,5 @@
 vendor
 .idea
 .DS_Store
+db.sql
+db.sqlite
